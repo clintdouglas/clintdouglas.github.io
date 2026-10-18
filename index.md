@@ -286,7 +286,7 @@ As an experienced nurse academic, I have taught across the nursing curriculum an
 
 ## Higher Degree Research Supervision {#supervision}
 
-I am accredited as a level 3 mentoring supervisor for student research projects. Current projects include (principal supervisor for all):
+I am accredited as a level 3 mentoring supervisor for student research projects. Current projects include (Principal supervisor for all):
 
 ### Current students {#current-students}
 
@@ -330,7 +330,7 @@ I am accredited as a level 3 mentoring supervisor for student research projects.
 
 Supervision for 12-month clinician researcher internship. Building collaborative partnerships between clinicians with great ideas for practice improvement and experienced nurse researchers who coach and mentor them through the research process:
 
-- **2025–26** Vanessa Bushing, Khanh Nguyen, Ellen Murphy, Megan Stone and Laura White
-- **2024–25** Hana Hoberg, Andrew Neilson, Veronica Regis, Laura Smith and Ella Tomkins
-- **2022–23** Graeme Best, Kylie Jacobs, Yashni Kander, Mei-Yu Liu, Mandy McAlister, Emma O'Brien and Karen Venaglia
-- **2020–21** Imelda Chua, Jill Davis, Renee McMillian, Joanne Vincent and Jane Wickins
+- **2025–26** Vanessa Bushing, Khanh Nguyen, Ellen Murphy, Megan Stone, and Laura White
+- **2024–25** Hana Hoberg, Andrew Neilson, Veronica Regis, Laura Smith, and Ella Tomkins
+- **2022–23** Graeme Best, Kylie Jacobs, Yashni Kander, Mei-Yu Liu, Mandy McAlister, Emma O'Brien, and Karen Venaglia
+- **2020–21** Imelda Chua, Jill Davis, Renee McMillian, Joanne Vincent, and Jane Wickins

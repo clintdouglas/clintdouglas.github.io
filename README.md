@@ -8,12 +8,12 @@ The site is a single page built by GitHub Pages (Jekyll) from Markdown. No build
 
 All content lives in **`index.md`**. Edit it on GitHub (pencil icon) or locally, commit, and the site rebuilds in about a minute.
 
-- Sections are `##` headings; sub-sections are `###`. Each heading carries an id in braces (`{#articles}`) that the sidebar navigation links to — keep those when renaming a heading.
-- **Publications, presentations and funding** are numbered lists (`1.`), newest first. Numbering in the file does not matter; the page renumbers automatically and inserts year dividers from the `(2026)` year in each entry.
+- Sections are `##` headings; sub-sections are `###`. Each heading carries an id in braces (`{#articles}`) that the top navigation and in-page links use — keep those when renaming a heading.
+- **Publications, presentations and funding** are numbered lists (`1.`), newest first. Numbering in the file does not matter; the page renumbers automatically and, for lists of six or more entries, inserts year dividers from the `(2026)` year in each entry.
 - Append `Scimago Q1` / `Q2` / `Q3` / `Q4` / `D1` to a reference and it is shown as a ranking badge.
 - **Education, awards, positions and internships** are bullet lists whose items start with a bold year, e.g. `- **2019–current** Professor and Nursing Chair, …`.
 - Update `updated:` in `_config.yml` when you revise the CV; it appears in the footer.
-- Profile links (email, GitHub, ORCID, …) are in the sidebar in `_layouts/default.html`; the portrait is `assets/img/clint-douglas.jpg`.
+- Profile links (email, QUT profile, ORCID, Google Scholar, GitHub) and the research-theme chips are in the hero section of `_layouts/default.html`; the portrait is `assets/img/clint-douglas.jpg` (strip EXIF metadata before replacing it; a 600×600 or larger image looks sharper on high-resolution screens and in link previews).
 
 ## Citation metrics (Google Scholar)
 
@@ -23,6 +23,7 @@ The line at the top of *Publications* (h-index, i10-index, citations) comes from
 - Refresh on demand: Actions tab → *Update Google Scholar metrics* → *Run workflow*.
 - If a run fails (no key, quota exhausted, API change), the previous numbers stay on the site; the failure shows in the Actions tab.
 - Scholar author id and schedule live in `scholar.yml`; the parsing is in `scripts/update-scholar.js`.
+- GitHub pauses scheduled workflows in a public repository after 60 days without a commit. The metrics job refreshes a `checked` date about every 45 days to keep the repository active; if the Actions tab ever shows a workflow as disabled, press *Enable workflow*.
 
 ## New publications from ORCID
 
@@ -39,7 +40,7 @@ The line at the top of *Publications* (h-index, i10-index, citations) comes from
 | Path | Purpose |
 | --- | --- |
 | `index.md` | The CV content |
-| `_layouts/default.html` | Page shell: head, sidebar, navigation, footer |
+| `_layouts/default.html` | Page shell: head, top navigation, hero (portrait, links, themes), footer |
 | `assets/css/style.css` | Styles, dark mode, print layout |
 | `assets/js/cv.js` | Badges, year dividers, filter box, citation metrics, nav highlighting |
 | `assets/data/scholar.json` | Google Scholar metrics (written by the weekly Action) |
@@ -50,4 +51,4 @@ The line at the top of *Publications* (h-index, i10-index, citations) comes from
 
 ## PDF
 
-Use **Print / save as PDF** in the sidebar (or the browser's print dialog); the print stylesheet produces a clean document without navigation.
+Use **Save as PDF** in the hero, the printer icon in the top bar, or the browser's print dialog; the print stylesheet produces a clean document without navigation.

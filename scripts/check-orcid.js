@@ -87,20 +87,29 @@ function draftEntry(cr, doi, type) {
   const ignoreTitles = (ignore.titles || []).map(normText);
 
   const data = await getJson('https://pub.orcid.org/v3.0/' + ORCID + '/works');
+  // A work can be reported by several sources (QUT PURE, Crossref, ...); look at all of them.
+  const PREPRINT_TYPES = ['preprint', 'conference-abstract', 'conference-poster', 'conference-presentation', 'data-set', 'other'];
   const works = (data.group || []).map(g => {
-    const s = g['work-summary'][0];
-    const ids = (s['external-ids'] && s['external-ids']['external-id']) || [];
-    const doi = ids.find(i => i['external-id-type'] === 'doi');
+    const summaries = g['work-summary'] || [];
+    const s = summaries[0];
+    const types = summaries.map(x => x.type);
+    let doi = null;
+    for (const x of summaries) {
+      const ids = (x['external-ids'] && x['external-ids']['external-id']) || [];
+      const d = ids.find(i => i['external-id-type'] === 'doi');
+      if (d) { doi = normDoi(d['external-id-value']); break; }
+    }
     return {
       title: s.title && s.title.title && s.title.title.value,
       year: s['publication-date'] && s['publication-date'].year && s['publication-date'].year.value,
-      type: s.type,
-      doi: doi ? normDoi(doi['external-id-value']) : null,
+      type: types.find(t => TARGETS[t]) || s.type,
+      preprint: types.some(t => PREPRINT_TYPES.includes(t)) || /^10\.1101\//.test(doi || ''),   // medRxiv/bioRxiv
+      doi,
       putCode: s['put-code'],
     };
   });
 
-  const candidates = works.filter(w => TARGETS[w.type] && w.doi && !pageDois.has(w.doi) && !ignoreDois.has(w.doi))
+  const candidates = works.filter(w => TARGETS[w.type] && !w.preprint && w.doi && !pageDois.has(w.doi) && !ignoreDois.has(w.doi))
     .filter(w => {
       const t = normText(w.title);
       if (t.length > 25 && pageText.includes(t.slice(0, 60))) return false;      // same paper, different/missing DOI on the page
@@ -113,6 +122,10 @@ function draftEntry(cr, doi, type) {
   for (const w of candidates) {
     try {
       const cr = (await getJson('https://api.crossref.org/works/' + encodeURIComponent(w.doi))).message;
+      if (!['journal-article', 'book-chapter', 'book-section'].includes(cr.type)) {   // e.g. posted-content = preprint
+        console.log(' - skipped ' + w.doi + ' (Crossref type ' + cr.type + ')');
+        continue;
+      }
       const d = draftEntry(cr, w.doi, w.type);
       proposals.push({ doi: w.doi, type: w.type, list: TARGETS[w.type].label, year: d.year, title: d.title, journal: d.journal, cite: d.cite, orcid: 'https://orcid.org/' + ORCID + '/work/' + w.putCode });
     } catch (e) {
@@ -141,6 +154,7 @@ function draftEntry(cr, doi, type) {
   body.push('Not wanted on the CV? Add its DOI to `scripts/publications-ignore.json` and close this pull request; it will not be proposed again.');
   fs.writeFileSync(path.join(OUT_DIR, 'pr-body.md'), body.join('\n') + '\n');
 
+  let inserted = 0;
   if (MODE === 'write' && proposals.some(p => p.cite)) {
     let out = md;
     for (const p of proposals.filter(x => x.cite).reverse()) {
@@ -150,10 +164,11 @@ function draftEntry(cr, doi, type) {
       const listStart = out.indexOf('\n1. ', at);
       if (listStart === -1) { console.warn('list not found after ' + heading); continue; }
       out = out.slice(0, listStart + 1) + '1. ' + p.cite + '\n' + out.slice(listStart + 1);
+      inserted++;
     }
     if (out !== md) fs.writeFileSync(INDEX, out);
   }
 
   proposals.forEach(p => console.log(' - [' + p.list + '] ' + (p.cite || p.title + ' (' + p.error + ')')));
-  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, 'count=' + proposals.length + '\n');
+  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, 'count=' + proposals.length + '\ninserted=' + inserted + '\n');
 })().catch(e => { console.error('check-orcid: ' + e.message); process.exit(1); });

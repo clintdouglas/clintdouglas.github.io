@@ -48,23 +48,35 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           OUT_DIR: ${{ runner.temp }}/orcid
+          COUNT: ${{ steps.check.outputs.count }}
+          INSERTED: ${{ steps.check.outputs.inserted }}
         run: |
           set -e
-          COUNT="${{ steps.check.outputs.count }}"
           TITLE="Review $COUNT new publication(s) found in ORCID"
+          open_issue() {
+            # Reuse an open issue with the same title if there is one.
+            NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number' 2>/dev/null || true)
+            if [ -n "$NUM" ]; then gh issue edit "$NUM" --body-file "$1"; echo "Updated issue #$NUM."; else gh issue create --title "$TITLE" --body-file "$1"; echo "Opened an issue."; fi
+          }
+          if [ "${INSERTED:-0}" = "0" ] || git diff --quiet -- index.md; then
+            echo "Nothing could be drafted into index.md (Crossref lookups failed); reporting as an issue."
+            open_issue "$OUT_DIR/pr-body.md"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B new-publications
           git add index.md
-          git commit -m "Propose $COUNT new publication(s) from ORCID"
+          git commit -m "Propose $INSERTED new publication(s) from ORCID"
           git push --force origin new-publications
-          if gh pr view new-publications --json number --jq .number >/dev/null 2>&1; then
-            gh pr edit new-publications --title "$TITLE" --body-file "$OUT_DIR/pr-body.md"
-            echo "Updated the existing pull request."
+          OPEN=$(gh pr list --head new-publications --state open --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$OPEN" ]; then
+            gh pr edit "$OPEN" --title "$TITLE" --body-file "$OUT_DIR/pr-body.md"
+            echo "Updated the open pull request #$OPEN."
           elif gh pr create --base main --head new-publications --title "$TITLE" --body-file "$OUT_DIR/pr-body.md"; then
             echo "Opened a pull request."
           else
             echo "Could not open a pull request (enable 'Allow GitHub Actions to create and approve pull requests' in Settings → Actions). Opening an issue instead."
             { echo "The drafted entries are on the \`new-publications\` branch: https://github.com/${{ github.repository }}/compare/main...new-publications"; echo; cat "$OUT_DIR/pr-body.md"; } > "$OUT_DIR/issue-body.md"
-            gh issue create --title "$TITLE" --body-file "$OUT_DIR/issue-body.md"
+            open_issue "$OUT_DIR/issue-body.md"
           fi

@@ -48,12 +48,21 @@ const url = 'https://serpapi.com/search.json?engine=google_scholar_author&hl=en&
     citations_since: metrics.citations ? metrics.citations.since : null,
   };
 
-  // Keep the previous "updated" date when the numbers have not moved, so the commit step sees no diff.
+  // Keep the previous "updated" date when the numbers have not moved, so the commit step sees no diff —
+  // except every ~45 days, when "checked" is refreshed so the repository shows activity (GitHub pauses
+  // scheduled workflows in public repositories after 60 days without any commit).
+  const today = result.updated;
   try {
     const prev = JSON.parse(fs.readFileSync(out, 'utf8'));
     const same = ['h_index', 'i10_index', 'citations', 'since_year', 'h_index_since', 'i10_index_since', 'citations_since'].every(k => prev[k] === result[k]);
-    if (same) result.updated = prev.updated;
-  } catch (e) { /* no previous file */ }
+    if (same) {
+      result.updated = prev.updated;
+      const last = Date.parse(prev.checked || prev.updated || 0);
+      result.checked = (Date.now() - last) > 45 * 86400e3 ? today : (prev.checked || prev.updated);
+    } else {
+      result.checked = today;
+    }
+  } catch (e) { result.checked = today; }
 
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, JSON.stringify(result, null, 2) + '\n');

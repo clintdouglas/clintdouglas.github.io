@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="{{ site.lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <meta name="author" content="Clint Douglas">
+  <link rel="canonical" href="{{ site.url }}/">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ page.description | default: site.description }}">
+  <meta property="og:url" content="{{ site.url }}/">
+  <meta property="og:image" content="{{ site.url }}/assets/img/clint-douglas.jpg">
+  <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0f14" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230f8f85'/%3E%3Cstop offset='1' stop-color='%233b5bdb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='30' font-style='italic' fill='%23fff' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Clint Douglas",
+    "honorificPrefix": "Professor",
+    "jobTitle": "Professor and Nursing Chair",
+    "affiliation": [
+      { "@type": "Organization", "name": "Queensland University of Technology, School of Nursing" },
+      { "@type": "Organization", "name": "Metro North Hospital and Health Service" }
+    ],
+    "email": "mailto:c2.douglas@qut.edu.au",
+    "url": "{{ site.url }}/",
+    "image": "{{ site.url }}/assets/img/clint-douglas.jpg",
+    "sameAs": [
+      "https://github.com/clintdouglas"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ Sticky top bar ============ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="#top" aria-label="Back to top">Clint&nbsp;<em>Douglas</em></a>
+      <nav class="nav" aria-label="Sections">
+        <ul>
+          <li><a href="#profile">Profile</a></li>
+          <li><a href="#education">Education</a></li>
+          <li><a href="#awards">Awards</a></li>
+          <li><a href="#positions">Positions</a></li>
+          <li><a href="#publications">Publications</a></li>
+          <li><a href="#presentations">Presentations</a></li>
+          <li><a href="#funding">Funding</a></li>
+          <li><a href="#teaching">Teaching</a></li>
+          <li><a href="#leadership">Leadership</a></li>
+          <li><a href="#editorial">Editorial</a></li>
+          <li><a href="#supervision">Supervision</a></li>
+          <li><a href="#internships">Internships</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="icon-btn" data-print title="Print or save as PDF" aria-label="Print or save as PDF">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M6 14h12v7H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="kicker">Professor · Nursing Chair</p>
+          <h1>Clint <em>Douglas</em></h1>
+          <p class="lede">Clinical academic working at the intersection of practice development, health services research and patient safety — leading research that strengthens nursing's influence on keeping hospital patients safe.</p>
+          <p class="affil">QUT School of Nursing &amp; Metro North Hospital and Health Service<br>Queensland University of Technology, Kelvin Grove, Brisbane</p>
+
+          <!-- Research themes (edit freely) -->
+          <ul class="chips" aria-label="Research themes">
+            <li>Patient safety</li>
+            <li>Practice development</li>
+            <li>Health services research</li>
+            <li>Clinical deterioration</li>
+            <li>Nurse staffing &amp; outcomes</li>
+            <li>Nurse-led services</li>
+          </ul>
+
+          <!-- Profile links. Add ORCID / Google Scholar / LinkedIn here as needed. -->
+          <ul class="links" aria-label="Profile links">
+            <li><a class="pill" href="mailto:c2.douglas@qut.edu.au"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m3 7 9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Email</a></li>
+            <li><a class="pill" href="https://github.com/clintdouglas" rel="me"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.84c.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>GitHub</a></li>
+            <li><button type="button" class="pill" data-print><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Save as PDF</button></li>
+          </ul>
+          <p class="print-only contact">c2.douglas@qut.edu.au · {{ site.url | remove: "https://" }}</p>
+        </div>
+        <figure class="hero-portrait">
+          <img src="/assets/img/clint-douglas.jpg" alt="Portrait of Clint Douglas" width="640" height="664" fetchpriority="high">
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CV content (from index.md) ============ -->
+    <div class="wrap">
+      <div class="cv">
+        {{ content }}
+      </div>
+
+      <footer class="foot">
+        <p>Last updated {{ site.updated }}</p>
+        <p><a href="https://github.com/clintdouglas/clintdouglas.github.io">Source on GitHub</a></p>
+      </footer>
+    </div>
+  </main>
+
+  <a class="to-top" href="#top" data-to-top aria-label="Back to top" hidden>
+    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+
+  <script src="/assets/js/cv.js" defer></script>
+</body>
+</html>

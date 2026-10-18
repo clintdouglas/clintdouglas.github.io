@@ -1,0 +1,23 @@
+# Site settings — GitHub Pages builds this with Jekyll automatically.
+title: Clint Douglas — Academic CV
+description: Curriculum vitae of Professor Clint Douglas, Nursing Chair, QUT School of Nursing and Metro North Hospital and Health Service.
+url: https://clintdouglas.github.io
+baseurl: ""
+lang: en
+
+# Shown in the page footer. Update when you revise the CV.
+updated: October 2026
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Files that are not part of the published site.
+exclude:
+  - scripts/
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/

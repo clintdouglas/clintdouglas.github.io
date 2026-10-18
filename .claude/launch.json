@@ -1,4 +1,11 @@
 {
   "version": "0.0.1",
-  "configurations": []
+  "configurations": [
+    {
+      "name": "zoomtest",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Users/douglas4/AppData/Local/Temp/claude/C--Users-douglas4-AppData-Roaming-Claude-scratch-workspaces-0ddcff1a-52a6-4a5a-84d6-79659ad5cca0-08624a46-e46b-4d6a-bc1a-7542da4d522f-scratch-2026-10-18-c2f0ec/974d053f-f0e0-4c84-bb08-ef6d5e33dadb/scratchpad/zoomtest/server.js"],
+      "port": 8765
+    }
+  ]
 }

@@ -1,0 +1,70 @@
+# Once a week, compares the ORCID record with the publications on the CV page.
+# Journal articles / book chapters with a DOI that are missing from index.md
+# are drafted from Crossref, committed to the "new-publications" branch and
+# proposed as a pull request for review. Nothing changes on the live site
+# until the pull request is merged.
+#
+# Needs: Settings → Actions → General → "Allow GitHub Actions to create and
+# approve pull requests" (otherwise it falls back to opening an issue).
+
+name: Propose new publications from ORCID
+
+on:
+  schedule:
+    - cron: '0 21 * * 1'   # Mondays 21:00 UTC = Tuesdays 07:00 in Brisbane
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: new-publications
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Compare ORCID with the page and draft entries
+        id: check
+        env:
+          ORCID_ID: 0000-0003-4131-5044
+          MODE: write
+          OUT_DIR: ${{ runner.temp }}/orcid
+        run: node scripts/check-orcid.js
+
+      - name: Open or update the pull request
+        if: steps.check.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUT_DIR: ${{ runner.temp }}/orcid
+        run: |
+          set -e
+          COUNT="${{ steps.check.outputs.count }}"
+          TITLE="Review $COUNT new publication(s) found in ORCID"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B new-publications
+          git add index.md
+          git commit -m "Propose $COUNT new publication(s) from ORCID"
+          git push --force origin new-publications
+          if gh pr view new-publications --json number --jq .number >/dev/null 2>&1; then
+            gh pr edit new-publications --title "$TITLE" --body-file "$OUT_DIR/pr-body.md"
+            echo "Updated the existing pull request."
+          elif gh pr create --base main --head new-publications --title "$TITLE" --body-file "$OUT_DIR/pr-body.md"; then
+            echo "Opened a pull request."
+          else
+            echo "Could not open a pull request (enable 'Allow GitHub Actions to create and approve pull requests' in Settings → Actions). Opening an issue instead."
+            { echo "The drafted entries are on the \`new-publications\` branch: https://github.com/${{ github.repository }}/compare/main...new-publications"; echo; cat "$OUT_DIR/pr-body.md"; } > "$OUT_DIR/issue-body.md"
+            gh issue create --title "$TITLE" --body-file "$OUT_DIR/issue-body.md"
+          fi

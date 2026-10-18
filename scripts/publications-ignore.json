@@ -1,0 +1,5 @@
+{
+  "_comment": "Publications found in ORCID that should NOT be proposed for the CV. Add a DOI (without https://doi.org/) to \"dois\", or the start of a title to \"titles\".",
+  "dois": [],
+  "titles": []
+}

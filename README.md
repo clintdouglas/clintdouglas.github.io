@@ -24,6 +24,16 @@ The line at the top of *Publications* (h-index, i10-index, citations) comes from
 - If a run fails (no key, quota exhausted, API change), the previous numbers stay on the site; the failure shows in the Actions tab.
 - Scholar author id and schedule live in `scholar.yml`; the parsing is in `scripts/update-scholar.js`.
 
+## New publications from ORCID
+
+`.github/workflows/publications.yml` runs every Monday night. It reads the public ORCID record (0000-0003-4131-5044), finds journal articles and book chapters with a DOI that are not yet in `index.md`, drafts each from its Crossref record in the CV's reference style, inserts them at the top of the matching list on a `new-publications` branch and opens a **pull request** for review. Nothing reaches the live site until the pull request is merged.
+
+- Review the PR: check authors/title against the paper, add the `Scimago Q…` rank, move or delete entries that don't belong, then merge.
+- Don't want an item on the CV? Add its DOI to `scripts/publications-ignore.json` and close the PR; it won't be proposed again.
+- Needs the repository setting *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests*; without it the workflow opens an issue instead.
+- Preprints, conference talks and ORCID items without a DOI are ignored on purpose.
+- Dry run locally: `node scripts/check-orcid.js` (prints what would be proposed, changes nothing).
+
 ## Files
 
 | Path | Purpose |
@@ -34,6 +44,7 @@ The line at the top of *Publications* (h-index, i10-index, citations) comes from
 | `assets/js/cv.js` | Badges, year dividers, filter box, citation metrics, nav highlighting |
 | `assets/data/scholar.json` | Google Scholar metrics (written by the weekly Action) |
 | `.github/workflows/scholar.yml`, `scripts/update-scholar.js` | The weekly metrics refresh |
+| `.github/workflows/publications.yml`, `scripts/check-orcid.js`, `scripts/publications-ignore.json` | The weekly ORCID check that proposes new publications |
 | `_config.yml` | Site title, URL, "last updated" |
 | `scripts/serve.js` | Optional local preview (`node scripts/serve.js`, needs [pandoc](https://pandoc.org)) |
 

@@ -57,9 +57,12 @@
     ol.querySelectorAll(':scope > li').forEach(function (li) { li.dataset.n = ++n; });
   });
 
-  /* ---- 3. Ranking badges + author highlight inside numbered lists ---- */
+  /* ---- 3. Ranking badges + author highlight inside numbered lists ----
+     Only the first "Douglas, C." in an entry is the author of this CV; a
+     later one is a co-author with the same initial (e.g. Carol Douglas). */
   lists.forEach(function (ol) {
     ol.querySelectorAll(':scope > li').forEach(function (li) {
+      var selfMarked = false;
       walkText(li, function (node) {
         var text = node.nodeValue;
         if (!/Scimago [QD]\d|Douglas,? C\./.test(text)) return;
@@ -67,6 +70,7 @@
         var re = /(Scimago ([QD]\d))|(\bDouglas,? C\.)/g;
         var last = 0, m;
         while ((m = re.exec(text))) {
+          if (m[3] && selfMarked) continue;
           if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
           if (m[1]) {
             var rank = m[2];
@@ -84,6 +88,7 @@
             s.className = 'me';
             s.textContent = m[3];
             frag.appendChild(s);
+            selfMarked = true;
           }
           last = re.lastIndex;
         }

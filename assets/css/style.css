@@ -289,6 +289,22 @@ img { max-width: 100%; height: auto; display: block; }
 
 #completions + p { font-size: .84rem; color: var(--muted); margin: -4px 0 12px; }
 
+/* Citation metrics line (added by cv.js from assets/data/scholar.json) */
+.cv p.metrics {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  max-width: none; margin: 0 0 18px;
+  font-size: .86rem; color: var(--muted);
+}
+.metrics-source { font-weight: 600; color: var(--ink); text-decoration: none; padding-right: 2px; }
+.metrics-source:hover { color: var(--accent); }
+.metric {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 4px 11px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line-strong); color: var(--ink-soft);
+}
+.metric b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.metrics-updated { font-size: .78rem; }
+
 /* Filter box (added by cv.js at the top of Publications) */
 .filter { position: relative; display: flex; align-items: center; gap: 12px; margin: 0 0 22px; }
 .filter label { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); }
@@ -354,6 +370,8 @@ img { max-width: 100%; height: auto; display: block; }
   html { scroll-behavior: auto; }
   body { font-size: 10.5pt; line-height: 1.4; background: #fff; }
   .topbar, .skip-link, .to-top, .filter, .chips, .links, .foot a { display: none !important; }
+  .cv p.metrics { margin-bottom: 8pt; }
+  .metric { border-color: #999; background: none; padding: 1pt 6pt; }
   .hero { padding: 0 0 10pt; border-bottom: 1px solid #000; overflow: visible; }
   .hero::before, .hero::after, .hero-portrait::before { display: none; }
   .hero-inner { padding: 0; grid-template-columns: 1fr auto; gap: 16pt; align-items: start; }

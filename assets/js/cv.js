@@ -138,6 +138,39 @@
     });
   }
 
+  /* ---- 5b. Google Scholar metrics line (data refreshed weekly by a GitHub Action) ---- */
+  if (pubBody && window.fetch) {
+    var sources = [cv.getAttribute('data-scholar-raw'), cv.getAttribute('data-scholar-json')].filter(Boolean);
+    var tryNext = function (i) {
+      if (i >= sources.length) return;
+      fetch(sources[i], { cache: 'no-cache' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(renderMetrics)
+        .catch(function () { tryNext(i + 1); });
+    };
+    tryNext(0);
+  }
+
+  function renderMetrics(d) {
+    if (!d || !Number.isFinite(d.h_index)) return;
+    var fmt = function (n) { return Number(n).toLocaleString('en-AU'); };
+    var p = document.createElement('p');
+    p.className = 'metrics';
+    var parts = [];
+    if (d.profile) parts.push('<a class="metrics-source" href="' + d.profile + '" rel="me">' + (d.source || 'Google Scholar') + '</a>');
+    parts.push('<span class="metric"><b>' + fmt(d.h_index) + '</b> h-index</span>');
+    if (Number.isFinite(d.i10_index)) parts.push('<span class="metric"><b>' + fmt(d.i10_index) + '</b> i10-index</span>');
+    if (Number.isFinite(d.citations)) parts.push('<span class="metric"><b>' + fmt(d.citations) + '</b> citations</span>');
+    if (d.updated) {
+      var dt = new Date(d.updated + 'T00:00:00');
+      var label = isNaN(dt) ? d.updated : dt.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+      parts.push('<span class="metrics-updated">updated ' + label + '</span>');
+    }
+    p.innerHTML = parts.join(' ');
+    var filter = pubBody.querySelector('.filter');
+    pubBody.insertBefore(p, filter || pubBody.firstChild);
+  }
+
   /* ---- 6. Nav highlighting ---- */
   var links = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
   var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);

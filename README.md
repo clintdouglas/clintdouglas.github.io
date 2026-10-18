@@ -15,6 +15,15 @@ All content lives in **`index.md`**. Edit it on GitHub (pencil icon) or locally,
 - Update `updated:` in `_config.yml` when you revise the CV; it appears in the footer.
 - Profile links (email, GitHub, ORCID, …) are in the sidebar in `_layouts/default.html`; the portrait is `assets/img/clint-douglas.jpg`.
 
+## Citation metrics (Google Scholar)
+
+The line at the top of *Publications* (h-index, i10-index, citations) comes from `assets/data/scholar.json`. The workflow in `.github/workflows/scholar.yml` refreshes that file every Monday through [SerpAPI](https://serpapi.com)'s Google Scholar Author API and commits it when the numbers change; the page reads the latest committed file on every visit.
+
+- One-time setup: add a repository secret named **`SERPAPI_KEY`** (Settings → Secrets and variables → Actions) containing your SerpAPI key.
+- Refresh on demand: Actions tab → *Update Google Scholar metrics* → *Run workflow*.
+- If a run fails (no key, quota exhausted, API change), the previous numbers stay on the site; the failure shows in the Actions tab.
+- Scholar author id and schedule live in `scholar.yml`; the parsing is in `scripts/update-scholar.js`.
+
 ## Files
 
 | Path | Purpose |
@@ -22,7 +31,9 @@ All content lives in **`index.md`**. Edit it on GitHub (pencil icon) or locally,
 | `index.md` | The CV content |
 | `_layouts/default.html` | Page shell: head, sidebar, navigation, footer |
 | `assets/css/style.css` | Styles, dark mode, print layout |
-| `assets/js/cv.js` | Badges, year dividers, filter box, nav highlighting |
+| `assets/js/cv.js` | Badges, year dividers, filter box, citation metrics, nav highlighting |
+| `assets/data/scholar.json` | Google Scholar metrics (written by the weekly Action) |
+| `.github/workflows/scholar.yml`, `scripts/update-scholar.js` | The weekly metrics refresh |
 | `_config.yml` | Site title, URL, "last updated" |
 | `scripts/serve.js` | Optional local preview (`node scripts/serve.js`, needs [pandoc](https://pandoc.org)) |
 

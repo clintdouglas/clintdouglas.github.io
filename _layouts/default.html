@@ -110,7 +110,10 @@
 
     <!-- ============ CV content (from index.md) ============ -->
     <div class="wrap">
-      <div class="cv">
+      <!-- data-scholar-*: where cv.js reads the citation metrics that .github/workflows/scholar.yml refreshes -->
+      <div class="cv"
+           data-scholar-raw="https://raw.githubusercontent.com/clintdouglas/clintdouglas.github.io/main/assets/data/scholar.json"
+           data-scholar-json="/assets/data/scholar.json">
         {{ content }}
       </div>
 

@@ -1,0 +1,49 @@
+# Refreshes assets/data/scholar.json (h-index, i10-index, citations) from
+# Google Scholar via SerpAPI once a week, and commits it when it changes.
+#
+# Needs one repository secret: SERPAPI_KEY  (Settings → Secrets and variables → Actions)
+# Run it by hand any time from the Actions tab ("Run workflow").
+
+name: Update Google Scholar metrics
+
+on:
+  schedule:
+    - cron: '0 20 * * 1'   # Mondays 20:00 UTC = Tuesdays 06:00 in Brisbane
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scholar-metrics
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch metrics from SerpAPI
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          SCHOLAR_USER: dPa1FrsAAAAJ
+        run: node scripts/update-scholar.js
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- assets/data/scholar.json; then
+            echo "Metrics unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/scholar.json
+          git commit -m "Update Google Scholar metrics"
+          git push

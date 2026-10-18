@@ -1,21 +1,29 @@
 /* Progressive enhancements for the CV page. The page reads fine without JS;
    this groups each section into a two-column block, adds ranking badges,
-   author highlighting, year dividers, a publications filter, nav highlighting
-   and a back-to-top button. */
+   author highlighting, year dividers, a publications filter, citation
+   metrics, nav highlighting and a back-to-top button. */
 (function () {
   'use strict';
 
   var cv = document.querySelector('.cv');
   if (!cv) return;
 
-  /* ---- 1. Group each h2 and what follows it into <section class="sec"> ---- */
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- 1. Group each h2 and what follows it into <section class="sec"> ----
+     The anchor id moves from the (sticky) heading to the section so that
+     #links and the scroll-spy target a non-sticky box. */
   var nodes = Array.prototype.slice.call(cv.childNodes);
   var current = null;
   nodes.forEach(function (node) {
     if (node.nodeType === 1 && node.tagName === 'H2') {
       current = document.createElement('section');
       current.className = 'sec';
-      current.setAttribute('aria-labelledby', node.id);
+      if (node.id) {
+        current.id = node.id;
+        node.id = node.id + '-heading';
+        current.setAttribute('aria-labelledby', node.id);
+      }
       var head = document.createElement('div');
       head.className = 'sec-head';
       var body = document.createElement('div');
@@ -29,19 +37,27 @@
     if (current) current.querySelector('.sec-body').appendChild(node);
   });
 
-  /* ---- 2. Mark year-led lists (Education, Awards, Positions, Internships) ---- */
+  /* ---- 2. Lists: keep list semantics in WebKit, mark year-led lists, number items ---- */
+  cv.querySelectorAll('ul, ol').forEach(function (list) { list.setAttribute('role', 'list'); });
+
   cv.querySelectorAll('ul').forEach(function (ul) {
     var items = ul.querySelectorAll(':scope > li');
     var dated = 0;
     items.forEach(function (li) {
-      var first = li.firstElementChild;
-      if (first && first.tagName === 'STRONG' && li.firstChild === first && /\d{4}/.test(first.textContent)) dated++;
+      var host = li.firstElementChild && li.firstElementChild.tagName === 'P' ? li.firstElementChild : li;
+      var first = host.firstElementChild;
+      if (first && first.tagName === 'STRONG' && host.firstChild === first && /\d{4}/.test(first.textContent)) dated++;
     });
     if (items.length && dated === items.length) ul.classList.add('dated');
   });
 
-  /* ---- 3. Ranking badges + author highlight inside numbered lists ---- */
   var lists = cv.querySelectorAll('ol');
+  lists.forEach(function (ol) {
+    var n = 0;
+    ol.querySelectorAll(':scope > li').forEach(function (li) { li.dataset.n = ++n; });
+  });
+
+  /* ---- 3. Ranking badges + author highlight inside numbered lists ---- */
   lists.forEach(function (ol) {
     ol.querySelectorAll(':scope > li').forEach(function (li) {
       walkText(li, function (node) {
@@ -56,7 +72,11 @@
             var rank = m[2];
             var b = document.createElement('span');
             b.className = 'badge ' + rank.toLowerCase();
-            b.textContent = rank;
+            var hiddenPrefix = document.createElement('span');
+            hiddenPrefix.className = 'visually-hidden';
+            hiddenPrefix.textContent = 'Scimago ';
+            b.appendChild(hiddenPrefix);
+            b.appendChild(document.createTextNode(rank));
             b.title = rank === 'D1' ? 'Scimago journal rank: top decile' : 'Scimago journal rank: quartile ' + rank.slice(1);
             frag.appendChild(b);
           } else {
@@ -103,8 +123,8 @@
   });
 
   /* ---- 5. Publications filter ---- */
-  var pubHeading = document.getElementById('publications');
-  var pubBody = pubHeading && pubHeading.closest('.sec') ? pubHeading.closest('.sec').querySelector('.sec-body') : null;
+  var pubSection = document.getElementById('publications');
+  var pubBody = pubSection && pubSection.classList.contains('sec') ? pubSection.querySelector('.sec-body') : null;
   if (pubBody) {
     var wrap = document.createElement('div');
     wrap.className = 'filter';
@@ -122,19 +142,35 @@
     wrap.appendChild(label); wrap.appendChild(input); wrap.appendChild(out);
     pubBody.insertBefore(wrap, pubBody.firstChild);
 
+    var norm = function (s) { return s.toLowerCase().replace(/[‘’]/g, "'").replace(/[“”]/g, '"'); };
     var pubItems = Array.prototype.slice.call(pubBody.querySelectorAll('ol > li'));
-    var total = pubItems.filter(function (li) { return !li.classList.contains('year-marker'); }).length;
+    var texts = pubItems.map(function (li) { return li.classList.contains('year-marker') ? '' : norm(li.textContent); });
+    var groups = Array.prototype.slice.call(pubBody.querySelectorAll('ol')).map(function (ol) {
+      var h = ol.previousElementSibling;
+      while (h && h.tagName !== 'H3') h = h.previousElementSibling;
+      return { ol: ol, heading: h };
+    });
+    var total = texts.filter(Boolean).length;
 
-    input.addEventListener('input', function () {
-      var q = input.value.trim().toLowerCase();
+    var applyFilter = function () {
+      var q = norm(input.value.trim());
       var shown = 0;
-      pubItems.forEach(function (li) {
+      pubItems.forEach(function (li, i) {
         if (li.classList.contains('year-marker')) { li.classList.toggle('is-hidden', !!q); return; }
-        var hit = !q || li.textContent.toLowerCase().indexOf(q) !== -1;
+        var hit = !q || texts[i].indexOf(q) !== -1;
         li.classList.toggle('is-hidden', !hit);
         if (hit) shown++;
       });
+      groups.forEach(function (g) {
+        var any = !q || !!g.ol.querySelector(':scope > li:not(.year-marker):not(.is-hidden)');
+        g.ol.classList.toggle('is-hidden', !any);
+        if (g.heading) g.heading.classList.toggle('is-hidden', !any);
+      });
       out.textContent = q ? shown + ' of ' + total : '';
+    };
+    input.addEventListener('input', applyFilter);
+    window.addEventListener('beforeprint', function () {
+      if (input.value) { input.value = ''; applyFilter(); }
     });
   }
 
@@ -171,24 +207,25 @@
     pubBody.insertBefore(p, filter || pubBody.firstChild);
   }
 
-  /* ---- 6. Nav highlighting ---- */
+  /* ---- 6. Nav highlighting + back-to-top ---- */
   var links = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
   var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
   var toTop = document.querySelector('[data-to-top]');
+  if (toTop) { toTop.hidden = false; toTop.classList.add('is-off'); }
   if (targets.length) {
     var active = null;
     var setActive = function (id) {
       if (id === active) return;
       active = id;
       links.forEach(function (a) {
-        var on = a.getAttribute('href') === '#' + id;
+        var on = id !== null && a.getAttribute('href') === '#' + id;
         a.classList.toggle('is-active', on);
         if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
         if (on) {
           var scroller = a.closest('ul');
           if (scroller && scroller.scrollWidth > scroller.clientWidth) {
             var r = a.getBoundingClientRect(), s = scroller.getBoundingClientRect();
-            scroller.scrollTo({ left: scroller.scrollLeft + (r.left - s.left) - (s.width - r.width) / 2, behavior: 'smooth' });
+            scroller.scrollTo({ left: scroller.scrollLeft + (r.left - s.left) - (s.width - r.width) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
           }
         }
       });
@@ -201,9 +238,10 @@
       for (var i = 0; i < targets.length; i++) {
         if (targets[i].getBoundingClientRect().top <= line) current = targets[i];
       }
-      if (current) setActive(current.id);
-      else if (active) { active = null; links.forEach(function (a) { a.classList.remove('is-active'); a.removeAttribute('aria-current'); }); }
-      if (toTop) toTop.hidden = window.scrollY < window.innerHeight * 0.8;
+      var doc = document.documentElement;
+      if (current && window.innerHeight + window.scrollY >= doc.scrollHeight - 2) current = targets[targets.length - 1];
+      setActive(current ? current.id : null);
+      if (toTop) toTop.classList.toggle('is-off', window.scrollY < window.innerHeight * 0.8);
     };
     var onScroll = function () { if (!ticking) { ticking = true; window.requestAnimationFrame(update); } };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -211,14 +249,17 @@
     update();
   }
 
-  /* ---- 7. Print buttons ---- */
-  Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function (btn) {
-    btn.addEventListener('click', function () { window.print(); });
+  /* ---- 7. Print buttons (hidden until JS is available) ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-print], [data-print-item]'), function (el) {
+    el.hidden = false;
+    if (el.hasAttribute('data-print')) el.addEventListener('click', function () { window.print(); });
   });
 
   /* ---- 8. Re-apply a #hash from the URL now that the layout has changed ---- */
-  if (location.hash && location.hash.length > 1) {
-    var target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (target) window.requestAnimationFrame(function () { target.scrollIntoView({ block: 'start' }); });
+  if (location.hash.length > 1) {
+    var id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch (e) { id = location.hash.slice(1); }
+    var target = document.getElementById(id);
+    if (target) window.requestAnimationFrame(function () { target.scrollIntoView({ block: 'start', behavior: 'instant' }); });
   }
 })();

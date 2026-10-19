@@ -142,7 +142,6 @@ function draftEntry(cr, doi, type) {
   body.push('');
   body.push('Before merging, for each entry:');
   body.push('- [ ] check author order, initials and the title against the published paper');
-  body.push('- [ ] add the journal ranking, e.g. `Scimago Q1`, at the end of the line');
   body.push('- [ ] move it to another list (or delete it) if it is not an original research article / book chapter');
   body.push('');
   for (const p of proposals) {

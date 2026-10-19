@@ -1,7 +1,7 @@
 /* Progressive enhancements for the CV page. The page reads fine without JS;
-   this groups each section into a two-column block, adds ranking badges,
-   author highlighting, year dividers, a publications filter, citation
-   metrics, nav highlighting and a back-to-top button. */
+   this groups each section into a two-column block, adds author
+   highlighting, year dividers, a publications filter, citation metrics,
+   nav highlighting and a back-to-top button. */
 (function () {
   'use strict';
 
@@ -57,43 +57,27 @@
     ol.querySelectorAll(':scope > li').forEach(function (li) { li.dataset.n = ++n; });
   });
 
-  /* ---- 3. Ranking badges + author highlight inside numbered lists ----
+  /* ---- 3. Author highlight inside numbered lists ----
      Only the first "Douglas, C." in an entry is the author of this CV; a
      later one is a co-author with the same initial (e.g. Carol Douglas). */
   lists.forEach(function (ol) {
     ol.querySelectorAll(':scope > li').forEach(function (li) {
       var selfMarked = false;
       walkText(li, function (node) {
+        if (selfMarked) return;
         var text = node.nodeValue;
-        if (!/Scimago [QD]\d|Douglas,? C\./.test(text)) return;
+        var m = /\bDouglas,? C\./.exec(text);
+        if (!m) return;
         var frag = document.createDocumentFragment();
-        var re = /(Scimago ([QD]\d))|(\bDouglas,? C\.)/g;
-        var last = 0, m;
-        while ((m = re.exec(text))) {
-          if (m[3] && selfMarked) continue;
-          if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
-          if (m[1]) {
-            var rank = m[2];
-            var b = document.createElement('span');
-            b.className = 'badge ' + rank.toLowerCase();
-            var hiddenPrefix = document.createElement('span');
-            hiddenPrefix.className = 'visually-hidden';
-            hiddenPrefix.textContent = 'Scimago ';
-            b.appendChild(hiddenPrefix);
-            b.appendChild(document.createTextNode(rank));
-            b.title = rank === 'D1' ? 'Scimago journal rank: top decile' : 'Scimago journal rank: quartile ' + rank.slice(1);
-            frag.appendChild(b);
-          } else {
-            var s = document.createElement('span');
-            s.className = 'me';
-            s.textContent = m[3];
-            frag.appendChild(s);
-            selfMarked = true;
-          }
-          last = re.lastIndex;
-        }
-        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+        if (m.index > 0) frag.appendChild(document.createTextNode(text.slice(0, m.index)));
+        var s = document.createElement('span');
+        s.className = 'me';
+        s.textContent = m[0];
+        frag.appendChild(s);
+        var rest = text.slice(m.index + m[0].length);
+        if (rest) frag.appendChild(document.createTextNode(rest));
         node.parentNode.replaceChild(frag, node);
+        selfMarked = true;
       });
     });
   });

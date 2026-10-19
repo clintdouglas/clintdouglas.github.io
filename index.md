@@ -1,12 +1,12 @@
 ---
 layout: default
 title: Clint Douglas — Academic CV
-description: Curriculum vitae of Professor Clint Douglas, Nursing Chair, QUT School of Nursing and Metro North Hospital and Health Service.
+description: Curriculum vitae of Professor Clint Douglas, Nursing Chair, QUT School of Nursing and Metro North Health.
 ---
 
 ## Profile {#profile}
 
-Prof Clint Douglas’ research focus is at the intersection of practice development, health services research and patient safety. With a clinical background in acute care nursing, he leads a research program to optimise the influence of nursing to keep patients safe: prevention of patient deterioration in general wards, the impact of hospital nurse staffing on patient outcomes, and evaluation of innovative nurse-led services. He has a successful track-record of building collaborative academic partnerships with clinicians, hospital executives and policy makers to design and execute complex and rigorous health services research—reflected in his appointment as Conjoint Professor and Nursing Chair at Metro North Hospital and Health Service.
+Prof Clint Douglas’ research focus is at the intersection of practice development, health services research and patient safety. With a clinical background in acute care nursing, he leads a research program to optimise the influence of nursing to keep patients safe: prevention of patient deterioration in general wards, the impact of hospital nurse staffing on patient outcomes, and evaluation of innovative nurse-led services. He has a successful track-record of building collaborative academic partnerships with clinicians, hospital executives and policy makers to design and execute complex and rigorous health services research—reflected in his appointment as Conjoint Professor and Nursing Chair at Metro North Health.
 
 ## Education {#education}
 
@@ -17,7 +17,7 @@ Prof Clint Douglas’ research focus is at the intersection of practice developm
 
 ## Awards and Appointments {#awards}
 
-- **2007** Nominated for QUT Outstanding Thesis Award
+- **2007** QUT Outstanding Thesis Award Nominee
 - **2008** QUT Faculty of Health Executive Dean’s Commendation for Higher Degree Research (PhD)
 - **2013** Honorary Research Fellow, Wesley Mission Brisbane
 - **2013** Honorary Research Fellow, Royal Brisbane and Women’s Hospital
@@ -26,7 +26,7 @@ Prof Clint Douglas’ research focus is at the intersection of practice developm
 - **2016** Faculty of Health Vice-Chancellor’s Performance Team Award
 - **2017** Vice-Chancellor’s Award for Excellence Nominee, BN course transformation team
 - **2018** Vice-Chancellor’s Award for Excellence Nominee, Research partnerships and engagement
-- **2019** Australian Epidemiological Association (AEA) Top Student Prize for MClinEpi coursework
+- **2019** Australian Epidemiological Association (AEA) Award for MClinEpi coursework
 - **2021** Fellowship of the Australian College of Nursing (FACN)
 - **2026** Metro North Health Research Excellence Award Finalist
 

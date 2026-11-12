@@ -290,12 +290,12 @@ I am accredited as a level 3 mentoring supervisor for student research projects.
 
 ### Current students {#current-students}
 
-- Betty Snell (PhD candidate), Evaluating short stay mental health services.
-- Imelda Chua (PhD candidate), Establishing safe Post Anaesthetic Care Unit patient discharge criteria.
-- Khera Kim (MPhil), Dementia friendly care environments in acute hospital wards.
+- Betty Snell (PhD), Evaluating short stay mental health services.
+- Imelda Chua (PhD), Establishing safe Post Anaesthetic Care Unit patient discharge criteria.
+- Khera Kim (PhD), Dementia friendly care environments in acute hospital wards.
 - Lauren Cahill (MPhil), Learning from team practices for patient safety in the cardiac catheter laboratory.
-- Luke Eldridge (PhD candidate), Nurse Practitioner diagnostic reasoning.
-- Natalie Rees (PhD candidate), Workforce flexibility in nursing: A critical exploration.
+- Luke Eldridge (PhD), Nurse Practitioner diagnostic reasoning.
+- Natalie Rees (PhD), Workforce flexibility in nursing: A critical exploration.
 - Sarah Middleton (MPhil), Nursing role development for interstitial lung disease.
 - Ralishka Chand (MPhil), Acute care nurses’ clinical reasoning during chest pain assessment.
 
